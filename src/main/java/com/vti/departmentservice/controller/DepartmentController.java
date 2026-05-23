@@ -35,7 +35,7 @@ public class DepartmentController {
         return listDpDTO;
     }
 
-    @GetMapping("/account/{acId}")
+    @GetMapping("/accounts/{acId}")
     public List<DepartmentDTO> getDepartmentsByAccountId(@PathVariable int acId) {
     
         List<Department> departments = dpService.getDepartmentsByAccountId(acId);
