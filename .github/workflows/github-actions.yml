@@ -34,4 +34,6 @@ jobs:
       - name: Stop and Remove Existing Containers
         run: |
           docker compose down
-        continue-on-error: true
+        continue-on-error: true # Ignore errors if no containers are running
+      - name: Run with Docker Compose
+        run: docker compose up -d
