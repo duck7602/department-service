@@ -94,16 +94,24 @@ jobs:
       - name: Render Kubernetes manifests
         shell: powershell
         run: |
-          (Get-Content k8s/deployment.yaml) `
-            -replace '\${IMAGE_NAME}', "$env:IMAGE_NAME" `
-            -replace '\${IMAGE_TAG}', "$env:IMAGE_TAG" `
-            | Set-Content k8s/deployment-rendered.yaml
+
+          $deployment = Get-Content k8s/deployment.yaml -Raw
+          $deployment = $deployment.Replace('${IMAGE_NAME}', "$env:IMAGE_NAME")
+          $deployment = $deployment.Replace('${IMAGE_TAG}', "$env:IMAGE_TAG")
+          $deployment = $deployment.Replace('${APP_PORT}', "$env:APP_PORT")
+
+          Set-Content k8s/deployment-rendered.yaml $deployment
+
+          $service = Get-Content k8s/service.yaml -Raw
+          $service = $service.Replace('${APP_PORT}', "$env:APP_PORT")
+
+          Set-Content k8s/service-rendered.yaml $service
 
       - name: Deploy to Minikube
         shell: powershell
         run: |
           kubectl apply -f k8s/deployment-rendered.yaml
-          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/service-rendered.yaml
 
       - name: Restart deployment
         shell: powershell
